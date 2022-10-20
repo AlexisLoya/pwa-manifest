@@ -19,7 +19,7 @@
 <body>
     <nav class="navbar bg-light fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/pages/all-notes.html">Mis super notas de PWA</a>
+            <a class="navbar-brand" href="/pages/all-notes.html">Mis notas de PWA</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar">
                 <span class="navbar-toggler-icon"></span>
@@ -64,41 +64,28 @@
     <br>
     <br>
     <div class="container pt-4">
-        <div class="card">
-            <div class="card-header text-bg-primary">
-                Agregar nota
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label for="exampleFormControlTextarea1" class="form-label">Mi nota</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 d-flex justify-content-center">
-                        <a href="#" class="btn btn-light btn-sm">
-                             <i class="fa-solid fa-camera mr-3"></i>
-                              Tomar foto
-                            </a>
-                       
-                    </div>
-                    <div class="col-6 d-flex justify-content-center">
-                        <a href="#" class="btn btn-success btn-sm">Guardar</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    
         <hr>
-        <h3>Mis notas</h3>
+        <h3>Notas Recientes</h3>
         <div class="card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-2">
-                        <img src="/images/imgjpg.jpg" class="img-fluid rounded" alt="Only caché.">
+                        <img src="../images/imgjpg.jpg" class="img-fluid rounded" alt="Only caché.">
+                    </div>
+                    <div class="col text-truncate">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus cupiditate ipsa necessitatibus.
+                        Veniam mollitia, aspernatur ea quaerat excepturi incidunt aut modi accusantium nihil, omnis
+                        ullam, alias magni molestias optio nostrum.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-2">
+                        <img src="../images/imgjpg.jpg" class="img-fluid rounded" alt="Only caché.">
                     </div>
                     <div class="col text-truncate">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus cupiditate ipsa necessitatibus.
@@ -118,7 +105,7 @@
 
     <script>
         if (navigator.serviceWorker) {
-            navigator.serviceWorker.register('sw.js');
+            navigator.serviceWorker.register('/sw.js');
             console.log('Service Worker Detectado');
         }else{
             console.log('Service Worker no detectado');
