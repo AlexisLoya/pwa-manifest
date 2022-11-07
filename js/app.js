@@ -33,38 +33,34 @@ const getAllNotes = async (latestDoc) => {
 
   // unattach event listeners if no more docs
   if (data.empty) {
-    console.log("no more docs");
-    loadMore.removeEventListener("click", handleClick);
     window.removeEventListener("scroll", handleScroll);
-  } else {
-    console.log("more docs");
+    loading.innerHTML = "No more notes";
   }
 };
 const showToast = (message, type) => {
   var notification = document.getElementById("notification");
   notification.innerHTML = `
-    <div class="alert ${type} alert-dismissible fade show" role="alert">
-    ${message}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
+  <div class="toast show" style="position:absolute; z-index:3; right:10px; top:4em;">
+    <div class="toast-header border-0 ${type}">
+      <strong class="me-auto text-white">${message}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
     </div>
+  </div>
   `;
 };
 const saveNote = async (note) => {
   const result = await saveNoteFirestore(note);
   if (result === "ok") {
-    showToast("Note saved", "alert-success");
+    showToast("The Note was saved", "bg-success");
   } else {
-    showToast("Error", "alert-danger");
+    showToast("Error", "bg-danger");
   }
 };
 const cleanNotes = () => {
   container.innerHTML = "";
 };
 
-const btnSaveNote = document.getElementById("btnSaveNote");
-btnSaveNote.addEventListener("click", async () => {
+document.getElementById("btnSaveNote").addEventListener("click", async () => {
   const textNote = document.getElementById("textNote");
   const note = {
     text: textNote.value,
@@ -80,24 +76,10 @@ window.addEventListener("DOMContentLoaded", () => getAllNotes());
 
 // load more books (scroll)
 const handleScroll = () => {
-  console.log(
-    "window.scrollY:",
-    window.scrollY,
-    "window.innerHeight:",
-    window.innerHeight,
-    "document.body.offsetHeight:",
-    document.body.offsetHeight
-  );
   if (window.scrollY >= document.body.offsetHeight - window.innerHeight) {
     getAllNotes(lastVisible);
   }
 };
 const loadMore = document.querySelector(".load-more button");
-
-const handleClick = () => {
-  getAllNotes(lastVisible);
-};
-
-loadMore.addEventListener("click", handleClick);
 
 window.addEventListener("scroll", handleScroll);

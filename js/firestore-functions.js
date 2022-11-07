@@ -15,7 +15,6 @@ import { app } from "/js/firestore.js";
 const db = getFirestore(app);
 
 const getNotesFirestore = async (latestDoc) => {
-  console.log(latestDoc);
   let queryResult = null;
   if (latestDoc) {
     queryResult = query(
@@ -41,7 +40,6 @@ const saveNoteFirestore = async (note) => {
     text: note.text,
     created_at: new Date(),
   });
-  console.log("Document written with ID: ", docRef.id);
 
   if (docRef.id) {
     return "ok";
