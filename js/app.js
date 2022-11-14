@@ -1,4 +1,8 @@
-import { getNotesFirestore, saveNoteFirestore } from "./firestore-functions.js";
+import {
+  getNotesFirestore,
+  saveNoteFirestore,
+  updateNoteFirestore,
+} from "./firestore-functions.js";
 
 // store last visible document
 let lastVisible = null;
@@ -6,15 +10,27 @@ let lastVisible = null;
 // DOM
 const container = document.querySelector(".notes");
 const loading = document.querySelector(".loading");
-
+var myModal = new bootstrap.Modal(document.getElementById("editNote"), {
+  keyboard: true,
+});
 const getAllNotes = async (latestDoc) => {
   // Get data from firestore
   const data = await getNotesFirestore(latestDoc);
 
-  let notes = "";
   data.forEach((doc) => {
-    notes += `
-        <div class="card m-1" >
+    // Create a new note
+    const note = document.createElement("div");
+    // Add class
+    note.setAttribute("data-image", "/images/imgjpg.jpg");
+    note.setAttribute("data-id", doc.id);
+    note.setAttribute("data-title", "Note");
+    note.setAttribute("data-content", doc.data().text);
+    note.setAttribute("data-content", doc.data().text);
+    note.setAttribute("data-bs-toggle", "modal");
+    note.setAttribute("data-bs-target", "#editNote");
+    // add style
+    note.innerHTML = `
+        <div class="card m-1">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-2">
@@ -25,9 +41,18 @@ const getAllNotes = async (latestDoc) => {
                 </div>
             </div>
             `;
+    // add event listener
+    note.addEventListener("click", (e) => {
+      const noteToEdit = {};
+      noteToEdit.id = note.getAttribute("data-id");
+      noteToEdit.title = note.getAttribute("data-title");
+      noteToEdit.content = note.getAttribute("data-content");
+      noteToEdit.image = note.getAttribute("data-image");
+      setNoteModalValues(noteToEdit);
+      // myModal.toggle();
+    });
+    container.appendChild(note);
   });
-  container.innerHTML += notes;
-
   // update latest doc
   lastVisible = data.docs[data.docs.length - 1];
 
@@ -37,6 +62,13 @@ const getAllNotes = async (latestDoc) => {
     loading.innerHTML = "No more notes";
   }
 };
+const setNoteModalValues = (note) => {
+  console.log("note", note);
+  document.getElementById("input-edit-note").value = note.content;
+  document.getElementById("editNoteLabel").value = note.title;
+  document.getElementById("idNote").value = note.id;
+};
+
 const showToast = (message, type) => {
   var notification = document.getElementById("notification");
   notification.innerHTML = `
@@ -56,10 +88,35 @@ const saveNote = async (note) => {
     showToast("Error", "bg-danger");
   }
 };
+
+const updateNote = async (note) => {
+  const result = await updateNoteFirestore(note);
+  if (result === "ok") {
+    showToast("The Note was updated", "bg-success");
+    myModal.hide();
+  } else {
+    showToast("Error", "bg-danger");
+  }
+};
+
 const cleanNotes = () => {
   container.innerHTML = "";
 };
 
+// note details
+document.getElementById("updateNote").addEventListener("click", (e) => {
+  const note = {
+    id: document.getElementById("idNote").value,
+    text: document.getElementById("input-edit-note").value,
+  };
+  console.log("app:note", note);
+  updateNote(note);
+  cleanNotes();
+  getAllNotes();
+  myModal.hide();
+});
+
+// save note
 document.getElementById("btnSaveNote").addEventListener("click", async () => {
   const textNote = document.getElementById("textNote");
   const note = {
@@ -80,6 +137,5 @@ const handleScroll = () => {
     getAllNotes(lastVisible);
   }
 };
-const loadMore = document.querySelector(".load-more button");
 
 window.addEventListener("scroll", handleScroll);

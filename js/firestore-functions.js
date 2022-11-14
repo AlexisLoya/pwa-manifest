@@ -6,6 +6,8 @@ import {
   addDoc,
   orderBy,
   limit,
+  doc,
+  updateDoc,
   startAfter,
 } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore.js";
 import {} from "https://www.gstatic.com/firebasejs/9.13.0/firebase-storage.js";
@@ -47,4 +49,17 @@ const saveNoteFirestore = async (note) => {
   return "faild";
 };
 
-export { getNotesFirestore, saveNoteFirestore };
+const updateNoteFirestore = async (note) => {
+  // update a document with a generated id.
+  const noteRef = doc(db, "notes", note.id);
+
+  if (noteRef) {
+    await updateDoc(noteRef, {
+      text: note.text,
+    });
+    return "ok";
+  }
+  return "faild";
+};
+
+export { getNotesFirestore, saveNoteFirestore, updateNoteFirestore };
