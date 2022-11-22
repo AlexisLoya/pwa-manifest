@@ -3,6 +3,7 @@ import {
   saveNoteFirestore,
   updateNoteFirestore,
 } from "./firestore-functions.js";
+import { base64ToFile } from "./ultils.js";
 
 // store last visible document
 let lastVisible = null;
@@ -34,7 +35,9 @@ const getAllNotes = async (latestDoc) => {
                 <div class="card-body">
                     <div class="row">
                         <div class="col-2">
-                            <img src="/images/imgjpg.jpg" class="img-fluid rounded" alt="Only caché.">
+                            <img 
+                            src="${doc.data().image}" 
+                            class="img-fluid rounded" alt="Only caché.">
                         </div>
                         <div class="col text-truncate">${doc.data().text}</div>
                     </div>
@@ -87,6 +90,9 @@ const saveNote = async (note) => {
   } else {
     showToast("Error", "bg-danger");
   }
+  const imagePreview = document.getElementById("image-preview");
+  imagePreview.src = "";
+  localStorage.removeItem("image");
 };
 
 const updateNote = async (note) => {
@@ -102,6 +108,12 @@ const updateNote = async (note) => {
 const cleanNotes = () => {
   container.innerHTML = "";
 };
+
+document.getElementById("take-photo-button").addEventListener("click", () => {
+  const textNote = document.getElementById("textNote");
+  localStorage.setItem("textNote", textNote.value);
+  location.href = "/pages/camera.html";
+});
 
 // note details
 document.getElementById("updateNote").addEventListener("click", (e) => {
@@ -122,6 +134,10 @@ document.getElementById("btnSaveNote").addEventListener("click", async () => {
   const note = {
     text: textNote.value,
   };
+  const base64 = localStorage.getItem("image");
+  if (base64) {
+    note.image = base64ToFile(base64, new Date().getTime() + ".jpg");
+  }
   await saveNote(note);
   textNote.value = "";
   cleanNotes();
@@ -139,3 +155,24 @@ const handleScroll = () => {
 };
 
 window.addEventListener("scroll", handleScroll);
+
+function setPreviewImage(base64) {
+  const imagePreview = document.getElementById("image-preview");
+  imagePreview.src = base64;
+}
+
+function checkFileNote() {
+  const base64 = localStorage.getItem("image");
+  if (!base64) return;
+  setPreviewImage(base64);
+}
+
+function checkTextNote() {
+  const text = localStorage.getItem("textNote");
+  if (!text) return;
+  const textNote = document.getElementById("textNote");
+  textNote.value = text;
+}
+
+checkFileNote();
+checkTextNote();

@@ -115,6 +115,7 @@
                 <label for="exampleFormControlTextarea1" class="form-label"
                   >Mi nota</label
                 >
+                <img width="100%" id="image-preview"></img>
                 <textarea
                   id="textNote"
                   class="form-control"
@@ -126,10 +127,10 @@
           </div>
           <div class="row">
             <div class="col-6 d-flex justify-content-center">
-              <a href="#" class="btn btn-light btn-sm">
+              <button id="take-photo-button" class="btn btn-light btn-sm">
                 <i class="fa-solid fa-camera mr-3"></i>
                 Tomar foto
-              </a>
+              </button>
             </div>
             <div class="col-6 d-flex justify-content-center">
               <a id="btnSaveNote" href="#" class="btn btn-success btn-sm"
@@ -152,12 +153,12 @@
     <!-- Full screen modal -->
     <!-- Modal -->
     <div
-      class="modal modal-fullscreen-xxl-down"
+      class="modal fade"
       id="editNote"
       aria-labelledby="editNoteLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="editNoteLabel">Edit Note</h5>

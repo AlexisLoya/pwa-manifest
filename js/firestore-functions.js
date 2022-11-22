@@ -10,7 +10,12 @@ import {
   updateDoc,
   startAfter,
 } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore.js";
-import {} from "https://www.gstatic.com/firebasejs/9.13.0/firebase-storage.js";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/9.13.0/firebase-storage.js";
 
 import { app } from "/js/firestore.js";
 
@@ -38,9 +43,11 @@ const getNotesFirestore = async (latestDoc) => {
 
 const saveNoteFirestore = async (note) => {
   // Add a new document with a generated id.
+  const imageUrl = await saveImageFirestore(note.image);
   const docRef = await addDoc(collection(db, "notes"), {
     text: note.text,
     created_at: new Date(),
+    image: imageUrl,
   });
 
   if (docRef.id) {
@@ -62,4 +69,17 @@ const updateNoteFirestore = async (note) => {
   return "faild";
 };
 
-export { getNotesFirestore, saveNoteFirestore, updateNoteFirestore };
+const saveImageFirestore = async (image) => {
+  const storage = getStorage(app);
+  const storageRef = ref(storage, "images/" + image.name);
+  const snapshot = await uploadBytes(storageRef, image);
+  const imageUrl = await getDownloadURL(snapshot.ref);
+  return imageUrl;
+};
+
+export {
+  getNotesFirestore,
+  saveNoteFirestore,
+  updateNoteFirestore,
+  saveImageFirestore,
+};
