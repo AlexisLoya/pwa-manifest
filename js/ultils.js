@@ -9,6 +9,15 @@ function toBlob(base64) {
     type: "image/png",
   });
 }
+function convertTimestamp(timestamp) {
+  let date = timestamp.toDate();
+  let mm = date.getMonth();
+  let dd = date.getDate();
+  let yyyy = date.getFullYear();
+
+  date = mm + "/" + dd + "/" + yyyy;
+  return date;
+}
 
 function base64ToFile(dataurl, filename) {
   var arr = dataurl.split(","),
@@ -22,4 +31,4 @@ function base64ToFile(dataurl, filename) {
   return new File([u8arr], filename, { type: mime });
 }
 
-export { toBlob, base64ToFile };
+export { toBlob, base64ToFile, convertTimestamp };

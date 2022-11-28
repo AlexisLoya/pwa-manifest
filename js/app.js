@@ -2,8 +2,9 @@ import {
   getNotesFirestore,
   saveNoteFirestore,
   updateNoteFirestore,
+  deleteNoteFirestore,
 } from "./firestore-functions.js";
-import { base64ToFile } from "./ultils.js";
+import { base64ToFile, convertTimestamp } from "./ultils.js";
 
 // store last visible document
 let lastVisible = null;
@@ -22,7 +23,11 @@ const getAllNotes = async (latestDoc) => {
     // Create a new note
     const note = document.createElement("div");
     // Add class
-    note.setAttribute("data-image", "/images/imgjpg.jpg");
+    let image = "/images/imgjpg.jpg";
+    if (doc.data().image) {
+      image = doc.data().image;
+    }
+    note.setAttribute("data-image", image);
     note.setAttribute("data-id", doc.id);
     note.setAttribute("data-title", "Note");
     note.setAttribute("data-content", doc.data().text);
@@ -36,10 +41,15 @@ const getAllNotes = async (latestDoc) => {
                     <div class="row">
                         <div class="col-2">
                             <img 
-                            src="${doc.data().image}" 
+                            src="${image}" 
                             class="img-fluid rounded" alt="Only caché.">
                         </div>
-                        <div class="col text-truncate">${doc.data().text}</div>
+                        <div class="col-6 text-truncate">${
+                          doc.data().text
+                        }</div>
+                        <div class="col-4">
+                          ${convertTimestamp(doc.data().created_at)}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,7 +62,6 @@ const getAllNotes = async (latestDoc) => {
       noteToEdit.content = note.getAttribute("data-content");
       noteToEdit.image = note.getAttribute("data-image");
       setNoteModalValues(noteToEdit);
-      // myModal.toggle();
     });
     container.appendChild(note);
   });
@@ -66,10 +75,10 @@ const getAllNotes = async (latestDoc) => {
   }
 };
 const setNoteModalValues = (note) => {
-  console.log("note", note);
   document.getElementById("input-edit-note").value = note.content;
   document.getElementById("editNoteLabel").value = note.title;
   document.getElementById("idNote").value = note.id;
+  document.getElementById("image-preview-modal").src = note.image;
 };
 
 const showToast = (message, type) => {
@@ -105,10 +114,26 @@ const updateNote = async (note) => {
   }
 };
 
+const deleteNote = async (id) => {
+  const result = await deleteNoteFirestore(id);
+  if (result === "ok") {
+    showToast("The Note was deleted", "bg-success");
+  } else {
+    showToast("Error", "bg-danger");
+  }
+};
 const cleanNotes = () => {
   container.innerHTML = "";
 };
+// Event listeners dom
 
+document.getElementById("BtnDeleteNote").addEventListener("click", async () => {
+  const id = document.getElementById("idNote").value;
+  deleteNote(id);
+  cleanNotes();
+  getAllNotes();
+  myModal.hide();
+});
 document.getElementById("take-photo-button").addEventListener("click", () => {
   const textNote = document.getElementById("textNote");
   localStorage.setItem("textNote", textNote.value);

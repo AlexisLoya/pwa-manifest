@@ -9,6 +9,7 @@ import {
   doc,
   updateDoc,
   startAfter,
+  deleteDoc,
 } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore.js";
 import {
   getStorage,
@@ -76,10 +77,19 @@ const saveImageFirestore = async (image) => {
   const imageUrl = await getDownloadURL(snapshot.ref);
   return imageUrl;
 };
+const deleteNoteFirestore = async (id) => {
+  const noteRef = doc(db, "notes", id);
+  if (noteRef) {
+    await deleteDoc(noteRef);
+    return "ok";
+  }
+  return "faild";
+};
 
 export {
   getNotesFirestore,
   saveNoteFirestore,
   updateNoteFirestore,
   saveImageFirestore,
+  deleteNoteFirestore,
 };

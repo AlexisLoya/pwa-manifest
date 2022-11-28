@@ -173,7 +173,7 @@
             <div class="card text-center">
               <div class="card-header">
                 <img
-                  src="/images/imgjpg.jpg"
+                  id="image-preview-modal"
                   class="img-fluid rounded"
                   alt="Only caché."
                 />
@@ -188,18 +188,30 @@
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" id="updateNote" class="btn btn-primary">
-              Update
-            </button>
-          </div>
+          <div class="modal-footer d-flex ">
+              <div class="p-2 flex-grow-1">
+                <button
+                id="BtnDeleteNote"
+                type="button"
+                class="btn btn-danger"
+                data-bs-dismiss="modal"
+              >
+              <i class="fa-solid fa-trash mr-3"></i>
+                </button>
+              </div>
+              <div class="p-2">
+                <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >Close</button>
+              </div>
+              <div class="p-2">
+                <button type="button" id="updateNote" class="btn btn-primary"data-bs-dismiss="modal">
+                  Update
+                </button>
+              </div>
+            </div>            
         </div>
       </div>
     </div>
