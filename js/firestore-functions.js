@@ -44,7 +44,10 @@ const getNotesFirestore = async (latestDoc) => {
 
 const saveNoteFirestore = async (note) => {
   // Add a new document with a generated id.
-  const imageUrl = await saveImageFirestore(note.image);
+  let imageUrl = "";
+  if (note.image) {
+    imageUrl = await saveImageFirestore(note.image);
+  }
   const docRef = await addDoc(collection(db, "notes"), {
     text: note.text,
     created_at: new Date(),

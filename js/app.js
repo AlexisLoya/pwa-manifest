@@ -93,6 +93,10 @@ const showToast = (message, type) => {
   `;
 };
 const saveNote = async (note) => {
+  if (textNote.value === "") {
+    showToast("The note is empty", "bg-danger");
+    return;
+  }
   const result = await saveNoteFirestore(note);
   if (result === "ok") {
     showToast("The Note was saved", "bg-success");
@@ -129,7 +133,7 @@ const cleanNotes = () => {
 
 document.getElementById("BtnDeleteNote").addEventListener("click", async () => {
   const id = document.getElementById("idNote").value;
-  deleteNote(id);
+  await deleteNote(id);
   cleanNotes();
   getAllNotes();
   myModal.hide();
@@ -141,13 +145,13 @@ document.getElementById("take-photo-button").addEventListener("click", () => {
 });
 
 // note details
-document.getElementById("updateNote").addEventListener("click", (e) => {
+document.getElementById("updateNote").addEventListener("click", async () => {
   const note = {
     id: document.getElementById("idNote").value,
     text: document.getElementById("input-edit-note").value,
   };
   console.log("app:note", note);
-  updateNote(note);
+  await updateNote(note);
   cleanNotes();
   getAllNotes();
   myModal.hide();
@@ -166,7 +170,7 @@ document.getElementById("btnSaveNote").addEventListener("click", async () => {
   await saveNote(note);
   textNote.value = "";
   cleanNotes();
-  getAllNotes();
+  await getAllNotes();
 });
 
 // load data on DOM loaded
